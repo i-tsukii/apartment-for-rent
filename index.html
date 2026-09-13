@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Apartment for Rent</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f5f7;
+            color: #222;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            padding: 25px 20px;
+            text-align: center;
+            background: #1f2937;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            opacity: 0.85;
+        }
+
+        /* Gallery */
+        .gallery {
+            position: relative;
+            background: #111;
+        }
+
+        .main-photo {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            object-position: center;
+            display: block;
+            background: #111;
+        }
+
+        .gallery button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: rgba(0,0,0,0.55);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 22px;
+        }
+
+        .gallery button:hover {
+            background: rgba(0,0,0,0.8);
+        }
+
+        #previous {
+            left: 15px;
+        }
+
+        #next {
+            right: 15px;
+        }
+
+        .photo-counter {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.65);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .main-photo {
+            cursor: pointer;
+        }
+
+        .photo-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+        }
+
+        .photo-modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 95vw;
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-photo {
+            max-width: 95vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 12px;
+            background: #000;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+        }
+
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.65);
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .modal-nav.prev {
+            left: -14px;
+        }
+
+        .modal-nav.next {
+            right: -14px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-size: 26px;
+            cursor: pointer;
+        }
+
+        /* Main content */
+        .content {
+            padding: 30px;
+        }
+
+        .price {
+            font-size: 32px;
+            font-weight: bold;
+            color: #15803d;
+            margin-bottom: 5px;
+        }
+
+        .price span {
+            font-size: 16px;
+            color: #666;
+            font-weight: normal;
+        }
+
+        .location {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        /* Details */
+        .details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .detail-box {
+            background: #f3f4f6;
+            padding: 18px 10px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .detail-box .icon {
+            font-size: 25px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .detail-box strong {
+            display: block;
+        }
+
+        .detail-box small {
+            color: #666;
+        }
+
+        /* Sections */
+        section {
+            margin-top: 35px;
+        }
+
+        section h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+        }
+
+        /* Amenities */
+        .amenities {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .amenity {
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 5px;
+        }
+
+        /* Pricing */
+        .pricing {
+            background: #f0fdf4;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .pricing-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #d1fae5;
+        }
+
+        .pricing-row:last-child {
+            border-bottom: none;
+        }
+
+        /* Contact */
+        .contact {
+            background: #1f2937;
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .contact p {
+            margin: 8px 0;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #777;
+            font-size: 13px;
+        }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+
+            header h1 {
+                font-size: 23px;
+            }
+
+            .main-photo {
+                height: 300px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .amenities {
+                grid-template-columns: 1fr;
+            }
+
+            .price {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <header>
+        <h1>Apartment for Rent</h1>
+        <p>Comfortable living in a convenient location</p>
+    </header>
+
+
+    <!-- PHOTO GALLERY -->
+    <div class="gallery">
+
+        <img
+            id="mainPhoto"
+            class="main-photo"
+            src="images/apt1.jpg"
+            alt="Apartment">
+
+        <button id="previous" onclick="previousPhoto()">‹</button>
+        <button id="next" onclick="nextPhoto()">›</button>
+
+        <div class="photo-counter">
+            <span id="photoNumber">1</span> /
+            <span id="photoTotal">3</span>
+        </div>
+
+    </div>
+
+    <div id="photoModal" class="photo-modal" aria-label="Expanded photo view" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <button id="modalPrev" class="modal-nav prev" aria-label="Previous image">‹</button>
+            <button id="closeModal" class="modal-close" aria-label="Close image">×</button>
+            <img id="modalPhoto" class="modal-photo" src="images/apt1.jpg" alt="Expanded apartment photo">
+            <button id="modalNext" class="modal-nav next" aria-label="Next image">›</button>
+        </div>
+    </div>
+
+
+    <!-- CONTENT -->
+    <main class="content">
+
+        <!-- PRICE -->
+        <div class="price">
+            ₱4,000 <span>/ month</span>
+        </div>
+
+        <div class="location">
+            📍 Purok 2 Tranca Bay, Laguna
+        </div>
+
+
+        <!-- BASIC DETAILS -->
+        <div class="details">
+
+            <div class="detail-box">
+                <span class="icon">🛏️</span>
+                <strong>Studio type</strong>
+            </div>
+
+            <div class="detail-box">
+                <span class="icon">🚿</span>
+                <strong>1 Bathroom</strong>
+            </div>
+
+            <div class="detail-box">
+                <span class="icon">📐</span>
+                <strong>Floor Area</strong>
+            </div>
+
+            <div class="detail-box">
+                <span class="icon">🚗</span>
+                <strong>Parking</strong>
+            </div>
+
+        </div>
+
+
+        <!-- DESCRIPTION -->
+        <section>
+            <h2>About the Apartment</h2>
+
+            <p>
+                This comfortable studio type apartment is suitable for
+                individuals and couples. The unit features a
+                spacious kitchen sink, a bathroom, a spacious backyard for laundry and
+                convenient parking. The unit is equipped with own meter for electricity and water supply. 
+                The apartment is located behind a Lomi House, near a Talipapa and nearby a school(CMDI) with good accessibility.
+            </p>
+        </section>
+
+
+        <!-- AMENITIES -->
+        <section>
+
+            <h2>Amenities</h2>
+
+            <div class="amenities">
+
+                <div class="amenity">✓ Kitchen</div>
+                <div class="amenity">✓ Parking</div>
+                <div class="amenity">✓ Water supply</div>
+                <div class="amenity">✓ Electricity supply</div>
+                <div class="amenity">✓ Secure building</div>
+                <div class="amenity">✓ Backyard Space</div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PRICING -->
+        <section>
+
+            <h2>Rental Information</h2>
+
+            <div class="pricing">
+
+                <div class="pricing-row">
+                    <span>Monthly Rent</span>
+                    <strong>₱4,000</strong>
+                </div>
+
+                <div class="pricing-row">
+                    <span>Security Deposit</span>
+                    <strong>₱4,000</strong>
+                </div>
+
+                <div class="pricing-row">
+                    <span>Advance Rent</span>
+                    <strong>₱4,000</strong>
+                </div>
+
+                <div class="pricing-row">
+                    <span>Electricity</span>
+                    <strong>Separate</strong>
+                </div>
+
+                <div class="pricing-row">
+                    <span>Water</span>
+                    <strong>Separate</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- AVAILABILITY -->
+        <section>
+
+            <h2>Availability</h2>
+
+            <p>
+                📅 3 Units Available
+            </p>
+
+        </section>
+
+
+        <!-- CONTACT -->
+        <section>
+
+            <div class="contact">
+
+                <h2>Contact for inquiries</h2>
+
+                <p>👤 Rogel Reyes</p>
+                <p>📞 0905 2494 4753 / 0960 264 6462</p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+        Apartment information • Updated 2026
+    </footer>
+
+</div>
+
+
+<script>
+
+    /*
+       ADD YOUR PHOTO FILENAMES HERE.
+       Put the photos inside the "images" folder.
+    */
+
+    const photos = [
+        "images/apt1.jpg",
+        "images/apt2.jpg",
+        "images/apt3.jpg",
+        "images/apt4.jpg",
+        "images/apt5.jpg",
+        "images/apt6.jpg",
+        "images/apt7.jpg",
+    ];
+
+    let currentPhoto = 0;
+
+    const mainPhoto = document.getElementById("mainPhoto");
+    const photoNumber = document.getElementById("photoNumber");
+    const photoTotal = document.getElementById("photoTotal");
+    const photoModal = document.getElementById("photoModal");
+    const modalPhoto = document.getElementById("modalPhoto");
+    const closeModal = document.getElementById("closeModal");
+    const modalPrev = document.getElementById("modalPrev");
+    const modalNext = document.getElementById("modalNext");
+
+
+    photoTotal.textContent = photos.length;
+
+
+    function showPhoto(index) {
+
+        currentPhoto = index;
+
+        mainPhoto.src = photos[currentPhoto];
+        modalPhoto.src = photos[currentPhoto];
+
+        photoNumber.textContent = currentPhoto + 1;
+    }
+
+
+    function openModal() {
+        modalPhoto.src = photos[currentPhoto];
+        photoModal.classList.add("open");
+    }
+
+
+    function closePhotoModal() {
+        photoModal.classList.remove("open");
+    }
+
+
+    function nextPhoto() {
+
+        currentPhoto++;
+
+        if (currentPhoto >= photos.length) {
+            currentPhoto = 0;
+        }
+
+        showPhoto(currentPhoto);
+    }
+
+
+    function previousPhoto() {
+
+        currentPhoto--;
+
+        if (currentPhoto < 0) {
+            currentPhoto = photos.length - 1;
+        }
+
+        showPhoto(currentPhoto);
+    }
+
+
+    mainPhoto.addEventListener("click", openModal);
+    closeModal.addEventListener("click", closePhotoModal);
+    modalPrev.addEventListener("click", function() {
+        previousPhoto();
+        if (photoModal.classList.contains("open")) {
+            modalPhoto.src = photos[currentPhoto];
+        }
+    });
+    modalNext.addEventListener("click", function() {
+        nextPhoto();
+        if (photoModal.classList.contains("open")) {
+            modalPhoto.src = photos[currentPhoto];
+        }
+    });
+
+    photoModal.addEventListener("click", function(event) {
+        if (event.target === photoModal) {
+            closePhotoModal();
+        }
+    });
+
+    // Optional keyboard navigation
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "Escape" && photoModal.classList.contains("open")) {
+            closePhotoModal();
+        }
+
+        if (event.key === "ArrowRight") {
+            nextPhoto();
+        }
+
+        if (event.key === "ArrowLeft") {
+            previousPhoto();
+        }
+
+    });
+
+</script>
+
+</body>
+</html>
