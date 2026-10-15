@@ -21,10 +21,11 @@
         }
 
         .container {
-            max-width: 900px;
-            margin: auto;
+            width: min(100%, 900px);
+            margin: 0 auto;
             background: white;
             min-height: 100vh;
+            overflow: hidden;
         }
 
         /* Header */
@@ -178,6 +179,81 @@
             padding: 30px;
         }
 
+        .availability-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(17, 24, 39, 0.68);
+            z-index: 2000;
+        }
+
+        .availability-modal.open {
+            display: flex;
+        }
+
+        .availability-dialog {
+            background: white;
+            border-radius: 18px;
+            padding: 28px 24px 20px;
+            max-width: 420px;
+            width: min(100%, 420px);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            position: relative;
+        }
+
+        .availability-dialog .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #dcfce7;
+            color: #15803d;
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .availability-dialog h3 {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            margin-bottom: 10px;
+            color: #111827;
+        }
+
+        .availability-dialog p {
+            color: #4b5563;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .availability-dialog .slot-count {
+            display: block;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #15803d;
+            margin: 6px 0 10px;
+        }
+
+        .availability-dialog button {
+            border: none;
+            background: #15803d;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .availability-dialog button:hover {
+            background: #166534;
+        }
+
         .price {
             font-size: 32px;
             font-weight: bold;
@@ -199,9 +275,10 @@
         /* Details */
         .details {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
             margin: 25px 0;
+            width: 100%;
         }
 
         .detail-box {
@@ -209,6 +286,12 @@
             padding: 18px 10px;
             text-align: center;
             border-radius: 8px;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
         }
 
         .detail-box .icon {
@@ -219,6 +302,7 @@
 
         .detail-box strong {
             display: block;
+            font-size: clamp(1rem, 2vw, 1.5rem);
         }
 
         .detail-box small {
@@ -322,6 +406,16 @@
 
 <div class="container">
 
+    <div id="availabilityModal" class="availability-modal open" aria-label="Availability notice" role="dialog" aria-modal="true">
+        <div class="availability-dialog">
+            <div class="badge">🏠</div>
+            <h3>Available Units</h3>
+            <span class="slot-count">2</span>
+            <p>There are currently 2 apartment units available for rent. Contact us soon to reserve your slot.</p>
+            <button id="closeAvailabilityModal" type="button">Continue</button>
+        </div>
+    </div>
+
     <!-- HEADER -->
     <header>
         <h1>Apartment for Rent</h1>
@@ -381,7 +475,7 @@
 
             <div class="detail-box">
                 <span class="icon">🚿</span>
-                <strong>1 Bathroom</strong>
+                <strong>Bathroom</strong>
             </div>
 
             <div class="detail-box">
@@ -413,12 +507,12 @@
 
             <div class="amenities">
 
-                <div class="amenity">✓ Kitchen</div>
-                <div class="amenity">✓ Parking</div>
-                <div class="amenity">✓ Water supply</div>
-                <div class="amenity">✓ Electricity supply</div>
-                <div class="amenity">✓ Secure building</div>
-                <div class="amenity">✓ Backyard Space</div>
+                <div class="amenity">✔️ Kitchen</div>
+                <div class="amenity">✔️ Parking</div>
+                <div class="amenity">✔️ Water supply</div>
+                <div class="amenity">✔️ Electricity supply</div>
+                <div class="amenity">✔️ Secure building</div>
+                <div class="amenity">✔️ Backyard Space</div>
 
             </div>
 
@@ -427,7 +521,7 @@
         
         <!-- NEARBY LANDMARKS -->
         <section>
-            <h2>📍 Nearby Landmarks</h2>
+            <h2>Nearby Landmarks</h2>
 
             <p style="margin-bottom: 15px; color: #666;">
                 Conveniently located near shops, schools,
@@ -437,32 +531,32 @@
             <div class="amenities">
 
                 <div class="amenity">
-                    🛒 <strong>Alfamart Tranca</strong><br>
+                    <strong>Alfamart Tranca</strong><br>
                     <small>2–3 minutes on foot</small>
                 </div>
 
                 <div class="amenity">
-                    🎓 <strong>CMDI</strong><br>
+                    <strong>CMDI</strong><br>
                     <small>2–3 minutes on foot</small>
                 </div>
 
                 <div class="amenity">
-                    📍 <strong>Likha</strong><br>
+                    <strong>Likha</strong><br>
                     <small>2–3 minutes on foot</small>
                 </div>
 
                 <div class="amenity">
-                    🎓 <strong>UPLB Campus</strong><br>
+                    <strong>UPLB Campus</strong><br>
                     <small>8–10 minutes by car</small>
                 </div>
 
                 <div class="amenity">
-                    🏫 <strong>Philippine High School for the Arts (PHSA)</strong><br>
+                    <strong>Philippine High School for the Arts (PHSA)</strong><br>
                     <small>5–7 minutes by car</small>
                 </div>
 
                 <div class="amenity">
-                    🏥 <strong>Global Care Medical Center of Bay</strong><br>
+                    <strong>Global Care Medical Center of Bay</strong><br>
                     <small>8–10 minutes by car</small>
                 </div>
 
@@ -517,7 +611,7 @@
             <h2>Availability</h2>
 
             <p>
-                📅 2 Units Available
+                🏠 2 Units Available
             </p>
 
         </section>
@@ -574,9 +668,22 @@
     const closeModal = document.getElementById("closeModal");
     const modalPrev = document.getElementById("modalPrev");
     const modalNext = document.getElementById("modalNext");
+    const availabilityModal = document.getElementById("availabilityModal");
+    const closeAvailabilityModal = document.getElementById("closeAvailabilityModal");
 
 
     photoTotal.textContent = photos.length;
+
+    function closeAvailabilityDialog() {
+        availabilityModal.classList.remove("open");
+    }
+
+    closeAvailabilityModal.addEventListener("click", closeAvailabilityDialog);
+    availabilityModal.addEventListener("click", function(event) {
+        if (event.target === availabilityModal) {
+            closeAvailabilityDialog();
+        }
+    });
 
 
     function showPhoto(index) {
